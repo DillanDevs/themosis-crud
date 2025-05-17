@@ -11,7 +11,7 @@ class PersonController extends Controller
 
     public function index()
     {
-        $people = Person::orderBy('created_at','desc')->get();
+        $people = Person::orderBy('created_at', 'desc')->get();
         return view('people.index', compact('people'));
     }
 
@@ -22,18 +22,26 @@ class PersonController extends Controller
 
     public function store(Request $request)
     {
+        $table = (new Person())->getTable();
+
         $data = $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
-            'rut'        => $this->rutRule,
+            'last_name' => 'required|string|max:255',
+            'rut' => array_merge(
+                $this->rutRule,
+                ["unique:{$table},rut"]
+            ),
             'birth_date' => 'required|date',
+        ], [
+            'rut.unique' => 'Este RUT ya está registrado.',
         ]);
 
         Person::create($data);
 
         return redirect()->route('people.index')
-                         ->with('success','Registro creado correctamente.');
+            ->with('success', 'Registro creado correctamente.');
     }
+
 
     public function edit(Person $person)
     {
@@ -42,24 +50,32 @@ class PersonController extends Controller
 
     public function update(Request $request, Person $person)
     {
+        $table = (new Person())->getTable();
+
         $data = $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
-            'rut'        => $this->rutRule,
+            'last_name' => 'required|string|max:255',
+            'rut' => array_merge(
+                $this->rutRule,
+                ["unique:{$table},rut,{$person->id}"]
+            ),
             'birth_date' => 'required|date',
+        ], [
+            'rut.unique' => 'Este RUT ya está registrado.',
         ]);
 
         $person->update($data);
 
         return redirect()->route('people.index')
-                         ->with('success','Registro actualizado correctamente.');
+            ->with('success', 'Registro actualizado correctamente.');
     }
+
 
     public function destroy(Person $person)
     {
         $person->delete();
 
         return redirect()->route('people.index')
-                         ->with('success','Registro eliminado correctamente.');
+            ->with('success', 'Registro eliminado correctamente.');
     }
 }

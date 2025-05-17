@@ -1,9 +1,12 @@
-{{-- resources/views/people/create.blade.php --}}
-@extends('layouts.main')
+@extends('layouts.plain')
+
 @section('content')
-  <h1>Crear Persona</h1>
-  <form action="{{ route('people.store') }}" method="POST">
-    @include('people._form')
-    <button type="submit">Guardar</button>
-  </form>
+  <div class="content">
+    <h1>Crear Persona</h1>
+
+    <form action="{{ route('people.store') }}" method="POST" class="people-form">
+      @include('people._form')
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+  </div>
 @endsection
