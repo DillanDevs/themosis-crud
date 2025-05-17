@@ -23,7 +23,8 @@ class Kernel extends HttpKernel
     protected $middlewareGroups = [
         'admin' => [
             \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\AdminOnly::class
         ],
         'web' => [
             'wp.headers',
